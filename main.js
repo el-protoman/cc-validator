@@ -86,3 +86,48 @@ const invalidCompanies = idInvalidCardCompanies(invalidCards);
 
 console.log(invalidCards);
 console.log(invalidCompanies);
+
+const stringToCardArray = (cardString) => {
+  return Array.from(cardString).map((char) => parseInt(char));
+};
+
+// Example usage
+const cardString = "4539677908016808";
+const cardArray = stringToCardArray(cardString);
+console.log(cardArray);
+// Output: [4, 5, 3, 9, 6, 7, 7, 9, 0, 8, 0, 1, 6, 8, 0, 8]
+
+const convertToValidCard = (cardArray) => {
+  // Clone the original array to avoid mutation
+  const modifiedCardArray = [...cardArray];
+
+  // Starting from the farthest digit to the right, iterate to the left
+  for (let i = modifiedCardArray.length - 2; i >= 0; i -= 2) {
+    let num = modifiedCardArray[i] * 2;
+
+    // If the doubled number is greater than 9, subtract 9 from its value
+    if (num > 9) {
+      num -= 9;
+    }
+
+    modifiedCardArray[i] = num;
+  }
+
+  // Calculate the sum of all digits in the modified card array
+  const sum = modifiedCardArray.reduce((acc, curr) => acc + curr, 0);
+
+  // Find the value to make the sum divisible by 10 (modulo 10)
+  const modValue = sum % 10 === 0 ? 0 : 10 - (sum % 10);
+
+  // Replace the check digit (last element) with the modValue
+  modifiedCardArray[modifiedCardArray.length - 1] = modValue;
+
+  return modifiedCardArray;
+};
+
+// Example usage
+const invalidCard = [4, 5, 3, 2, 7, 7, 8, 7, 7, 1, 0, 9, 1, 7, 9, 5];
+const validCard = convertToValidCard(invalidCard);
+console.log(validCard);
+// Output: [4, 5, 3, 2, 7, 7, 8, 7, 7, 1, 0, 9, 1, 7, 9, 2]
+
